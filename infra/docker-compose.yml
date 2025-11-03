@@ -1,0 +1,62 @@
+#############################################
+# 🐳 AI Chat App - Local Development Stack
+# -------------------------------------------
+# This docker-compose.yml file sets up the core
+# infrastructure for local development.
+#
+# Services included:
+#   - PostgreSQL 15 (primary database)
+#   - Redis (optional, commented out)
+#
+# Usage:
+#   docker compose up -d
+#############################################
+
+services:
+  ##################################################
+  # 🗄️ PostgreSQL - Primary Database
+  ##################################################
+  postgres:
+    image: postgres:15
+    container_name: ai-chat-postgres
+    restart: always
+    command: postgres -c password_encryption=md5
+    ports:
+      - "5433:5432" # Map container port 5432 to host
+    environment:
+      POSTGRES_DB: chatdb # Database name
+      POSTGRES_USER: chatuser # Username
+      POSTGRES_PASSWORD: chatpass # Password
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data # Persistent storage
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatuser -d chatdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - ai-chat-network
+
+  ##################################################
+  # ⚡ Redis (Optional) - For Socket Scaling / Caching
+  ##################################################
+  # redis:
+  #   image: redis:7
+  #   container_name: ai-chat-redis
+  #   restart: always
+  #   ports:
+  #     - "6379:6379"           # Default Redis port
+  #   volumes:
+  #     - ./redis-data:/data    # Persistent Redis data
+  #   networks:
+  #     - ai-chat-network
+  #   # Uncomment this service later when you add
+  #   # real-time scaling or caching with Redis.
+
+##################################################
+# 🌐 Network Configuration
+##################################################
+networks:
+  ai-chat-network:
+    driver: bridge

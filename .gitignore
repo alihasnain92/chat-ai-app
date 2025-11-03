@@ -1,0 +1,178 @@
+# ===============================
+# 🌍 General Node.js / Monorepo
+# ===============================
+
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+out/
+coverage/
+.nyc_output/
+.cache/
+.next/
+.vite/
+
+# TypeScript build artifacts
+*.tsbuildinfo
+*.d.ts
+**/*.d.ts.map
+
+# Local development logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency lock files (optional — keep only if you prefer one)
+# Uncomment the one(s) you use
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Environment files
+.env
+.env.*
+!.env.example          # Keep example envs tracked
+
+# ===============================
+# 🧠 Backend (Express + Prisma)
+# ===============================
+
+# Prisma generated client
+**/prisma/generated/
+**/prisma/migrations/dev/
+**/prisma/dev.db
+**/prisma/*.db
+**/prisma/*.db-journal
+
+# Logs and temp files
+logs/
+*.log
+*.tmp
+tmp/
+*.pid
+*.seed
+*.sqlite
+*.sqlite-journal
+
+# Uploaded or temp files
+uploads/
+storage/
+data/
+files/
+
+# ===============================
+# ⚛️ Frontend (React + Vite)
+# ===============================
+
+# Vite cache and build
+**/dist/
+**/.vite/
+**/.cache/
+**/coverage/
+
+# Local build/test artifacts
+*.local
+*.log
+*.gz
+*.zip
+
+# Local environment overrides
+.env.local
+.env.development.local
+.env.production.local
+.env.test.local
+
+# Editor / IDE files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ===============================
+# 🐳 Docker & Infrastructure
+# ===============================
+
+# Docker artifacts
+**/docker-compose.override.yml
+**/docker-data/
+**/infra/docker/postgres-data/
+**/infra/docker/volumes/
+**/infra/nginx/logs/
+**/.docker/
+
+# Ignore mounted volumes or data dirs
+**/data/
+**/db/
+**/pgdata/
+**/backups/
+
+# ===============================
+# 🧰 System Files
+# ===============================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.Trash-*
+
+# ===============================
+# 🧪 Testing / Coverage
+# ===============================
+
+coverage/
+.jest/
+jest-cache/
+jest-html-reporters-*
+jest-stare/
+test-results.xml
+
+# ===============================
+# 🔧 Miscellaneous
+# ===============================
+
+# Temporary files
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+
+# Local environment or debug configs
+.envrc
+.envrc.local
+.local/
+.settings/
+.cache-loader/
+
+# IDE & tools
+*.iml
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# ===============================
+# ✅ Keep these tracked
+# ===============================
+
+!.env.example
+!.gitignore
+!.prettierrc
+!.eslintrc
+!README.md
