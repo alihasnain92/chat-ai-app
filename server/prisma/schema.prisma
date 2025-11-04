@@ -6,6 +6,25 @@
 
 // prisma/schema.prisma
 
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// model User {
+//   id        String   @id @default(uuid())
+//   email     String   @unique
+//   createdAt DateTime @default(now())
+// }
+
+// = NEW CODE ==
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,7 +35,116 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
+  id           String   @id @default(uuid()) @db.Uuid
+  name         String   @db.VarChar(255)
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash") @db.Text
+  avatarUrl    String?  @map("avatar_url") @db.Text
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  // Relations
+  conversationsCreated Conversation[]    @relation("ConversationCreator")
+  participants         Participant[]
+  messagesSent         Message[]
+  reactions            MessageReaction[]
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Conversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  title     String?  @db.VarChar(255)
+  isGroup   Boolean  @default(false) @map("is_group")
+  createdBy String?  @map("created_by") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  // Relations
+  creator      User?         @relation("ConversationCreator", fields: [createdBy], references: [id], onDelete: SetNull)
+  participants Participant[]
+  messages     Message[]
+
+  @@index([createdBy])
+  @@index([createdAt])
+  @@index([isGroup])
+  @@map("conversations")
+}
+
+model Participant {
+  id             String   @id @default(uuid()) @db.Uuid
+  conversationId String   @map("conversation_id") @db.Uuid
+  userId         String   @map("user_id") @db.Uuid
+  joinedAt       DateTime @default(now()) @map("joined_at") @db.Timestamp(6)
+  role           String   @default("member") @db.Text
+
+  // Relations
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([conversationId])
+  @@index([userId])
+  @@index([role])
+  @@map("participants")
+}
+
+model Message {
+  id               BigInt    @id @default(autoincrement())
+  conversationId   String    @map("conversation_id") @db.Uuid
+  senderId         String?   @map("sender_id") @db.Uuid
+  content          String    @db.Text
+  attachments      Json?     @db.JsonB
+  status           String    @default("sent") @db.Text
+  statusTimestamps Json?     @map("status_timestamps") @db.JsonB
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  editedAt         DateTime? @map("edited_at") @db.Timestamp(6)
+
+  // Relations
+  conversation Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User?             @relation(fields: [senderId], references: [id], onDelete: SetNull)
+  reactions    MessageReaction[]
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+  @@index([conversationId, createdAt(sort: Desc)])
+  @@index([status])
+  @@map("messages")
+}
+
+model MessageReaction {
+  id        String   @id @default(uuid()) @db.Uuid
+  messageId BigInt   @map("message_id")
+  userId    String   @map("user_id") @db.Uuid
+  emoji     String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  // Relations
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([messageId, userId, emoji])
+  @@index([messageId])
+  @@index([userId])
+  @@map("message_reactions")
+}
+
+model AiCache {
+  id            String   @id @default(uuid()) @db.Uuid
+  model         String   @db.Text
+  promptHash    String   @map("prompt_hash") @db.Text
+  promptSummary String   @map("prompt_summary") @db.Text
+  responseText  String   @map("response_text") @db.Text
+  tokensUsed    Int      @map("tokens_used")
+  costEstimate  Decimal  @map("cost_estimate") @db.Decimal(10, 6)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+  ttl           DateTime @db.Timestamp(6)
+
+  @@unique([model, promptHash])
+  @@index([model, promptHash])
+  @@index([ttl])
+  @@index([createdAt])
+  @@map("ai_cache")
 }

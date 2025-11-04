@@ -7,7 +7,7 @@
 
     /* Output and Build Options */
     "outDir": "./dist",                       /* Compiled output directory */
-    "rootDir": "./src",                       /* Source TypeScript files */
+    /* rootDir removed - TypeScript will infer it */
     "sourceMap": true,                        /* Generate .map files for debugging */
 
     /* Module Resolution */
@@ -29,6 +29,6 @@
     "types": ["node"],                        /* Include Node.js type declarations */
     "allowJs": false                          /* Disallow plain JavaScript files */
   },
-  "include": ["src/**/*"],                    /* Include all TS source files */
+  "include": ["src/**/*", "prisma/**/*"],     /* Include all TS source files + Prisma */
   "exclude": ["node_modules", "dist", "tests"] /* Exclude build & external folders */
 }
