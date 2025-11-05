@@ -1,0 +1,247 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "AI Chat App - Auth",
+  "collectionId": "ai-chat-auth-collection",
+  "dateExported": "2025-11-05",
+  "version": "1.2",
+  "folders": [],
+  "requests": [
+    {
+      "name": "Register User",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "set-env-var",
+          "action": "setTo",
+          "value": "{{token}}",
+          "varName": "token"
+        },
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "201"
+        },
+        {
+          "type": "json-query",
+          "action": "equal",
+          "value": "json.token",
+          "expression": "token"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Register - Duplicate Email (Should Fail)",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Jane Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"AnotherPass123\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "400|409"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Register - Weak Password (Should Fail)",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Bob Smith\",\n  \"email\": \"bob.smith@example.com\",\n  \"password\": \"123\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "400"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Login",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"SecurePass123\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "set-env-var",
+          "action": "setTo",
+          "value": "{{token}}",
+          "varName": "token"
+        },
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "action": "equal",
+          "value": "json.token",
+          "expression": "token"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Login - Wrong Password (Should Fail)",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"WrongPassword123\"\n}",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "401"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Get Me",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/auth/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "200"
+        },
+        {
+          "type": "json-query",
+          "action": "istype",
+          "value": "json.user.id",
+          "expression": "string"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Get Me - Without Token (Should Fail)",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/auth/me",
+      "headers": [],
+      "body": {
+        "type": "json",
+        "raw": "",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "401"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Get Me - Invalid Token (Should Fail)",
+      "method": "GET",
+      "url": "{{baseUrl}}/api/auth/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer invalid.token.here"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "",
+        "form": []
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "401"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-05T00:00:00.000Z",
+      "modified": "2025-11-05T00:00:00.000Z"
+    }
+  ],
+  "settings": {
+    "headers": [],
+    "tests": []
+  }
+}

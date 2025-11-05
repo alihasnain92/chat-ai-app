@@ -26,9 +26,13 @@
     "noFallthroughCasesInSwitch": true,       /* Prevent fallthroughs in switch statements */
 
     /* Node.js Specific */
-    "types": ["node"],                        /* Include Node.js type declarations */
+    "types": ["node", "jest"],                /* Include Node.js and Jest type declarations */
+    "typeRoots": ["./node_modules/@types", "./src/types"], /* Include custom type definitions */
     "allowJs": false                          /* Disallow plain JavaScript files */
   },
   "include": ["src/**/*", "prisma/**/*"],     /* Include all TS source files + Prisma */
-  "exclude": ["node_modules", "dist", "tests"] /* Exclude build & external folders */
+  "exclude": ["node_modules", "dist", "tests"], /* Exclude build & external folders */
+  "ts-node": {
+    "files": true                             /* Enable ts-node to process .d.ts files */
+  }
 }
