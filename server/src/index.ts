@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
+import path from 'path';
 
 // Load environment variables
 dotenv.config();
@@ -10,6 +12,9 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 4000;
 
 // Middleware
 app.use(express.json());
+
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Health check endpoint
 app.get("/api/health", (req: Request, res: Response) => {
@@ -38,6 +43,10 @@ app.post("/api/echo", (req: Request, res: Response) => {
 app.use("/api/auth", authRoutes);
 console.log("🔐 Auth routes mounted at /api/auth");
 
+// Mount user routes
+app.use("/api/users", userRoutes);
+console.log("👥 User routes mounted at /api/users");
+
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error("❌ Error occurred:", err);
@@ -46,7 +55,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // ✅ Export the app for testing
-export {app};
+export default app;
 
 // ✅ Only start the server if this file is run directly (not during tests)
 if (require.main === module) {
@@ -57,5 +66,12 @@ if (require.main === module) {
     console.log(`   POST http://localhost:${PORT}/api/auth/register`);
     console.log(`   POST http://localhost:${PORT}/api/auth/login`);
     console.log(`   GET  http://localhost:${PORT}/api/auth/me`);
+    console.log(`👥 User endpoints:`);
+    console.log(`   GET  http://localhost:${PORT}/api/users/search?q=query`);
+    console.log(`   GET  http://localhost:${PORT}/api/users`);
+    console.log(`   GET  http://localhost:${PORT}/api/users/me`);
+    console.log(`   PUT  http://localhost:${PORT}/api/users/me`);
+    console.log(`   POST http://localhost:${PORT}/api/users/me/avatar`);
+    console.log(`   GET  http://localhost:${PORT}/api/users/:id`);
   });
 }

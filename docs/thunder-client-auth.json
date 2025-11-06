@@ -238,6 +238,39 @@
       "colId": "ai-chat-auth-collection",
       "created": "2025-11-05T00:00:00.000Z",
       "modified": "2025-11-05T00:00:00.000Z"
+    },
+    {
+      "name": "Upload Avatar",
+      "method": "POST",
+      "url": "{{baseUrl}}/api/users/me/avatar",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer {{token}}"
+        }
+      ],
+      "body": {
+        "type": "formdata",
+        "raw": "",
+        "form": [
+          {
+            "name": "avatar",
+            "value": "",
+            "type": "file",
+            "fileName": ""
+          }
+        ]
+      },
+      "tests": [
+        {
+          "type": "res-code",
+          "action": "equal",
+          "value": "200"
+        }
+      ],
+      "colId": "ai-chat-auth-collection",
+      "created": "2025-11-07T00:00:00.000Z",
+      "modified": "2025-11-07T00:00:00.000Z"
     }
   ],
   "settings": {
