@@ -2,6 +2,8 @@ import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
 import authRoutes from "./routes/auth.routes";
 import userRoutes from "./routes/user.routes";
+import conversationRoutes from "./routes/conversation.routes";
+import messageRoutes from "./routes/message.routes";
 import path from 'path';
 
 // Load environment variables
@@ -47,6 +49,14 @@ console.log("🔐 Auth routes mounted at /api/auth");
 app.use("/api/users", userRoutes);
 console.log("👥 User routes mounted at /api/users");
 
+// Mount conversation routes
+app.use("/api/conversations", conversationRoutes);
+console.log("💬 Conversation routes mounted at /api/conversations");
+
+// Mount message routes (handles both /conversations/:id/messages and /messages/:id)
+app.use("/api", messageRoutes);
+console.log("💬 Message routes mounted at /api");
+
 // Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error("❌ Error occurred:", err);
@@ -73,5 +83,16 @@ if (require.main === module) {
     console.log(`   PUT  http://localhost:${PORT}/api/users/me`);
     console.log(`   POST http://localhost:${PORT}/api/users/me/avatar`);
     console.log(`   GET  http://localhost:${PORT}/api/users/:id`);
+    console.log(`💬 Conversation endpoints:`);
+    console.log(`   GET    http://localhost:${PORT}/api/conversations`);
+    console.log(`   POST   http://localhost:${PORT}/api/conversations`);
+    console.log(`   GET    http://localhost:${PORT}/api/conversations/:id`);
+    console.log(`   POST   http://localhost:${PORT}/api/conversations/:id/participants`);
+    console.log(`   DELETE http://localhost:${PORT}/api/conversations/:id/participants`);
+    console.log("💬 Message endpoints:");
+    console.log(`   POST   http://localhost:${PORT}/api/conversations/:conversationId/messages`);
+    console.log(`   GET    http://localhost:${PORT}/api/conversations/:conversationId/messages`);
+    console.log(`   PUT    http://localhost:${PORT}/api/messages/:id`);
+    console.log(`   DELETE http://localhost:${PORT}/api/messages/:id`);
   });
 }
