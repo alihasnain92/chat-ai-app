@@ -173,8 +173,8 @@ Before you begin, ensure you have:
 
 1. **Clone the repository**
 ```bash
-   git clone https://github.com/yourusername/ai-chat-app.git
-   cd ai-chat-app
+   git clone https://github.com/alihasnain92/chat-ai-app
+   cd chat-ai-app
 ```
 
 2. **Install dependencies**
